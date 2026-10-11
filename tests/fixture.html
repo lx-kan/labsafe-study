@@ -1,0 +1,24 @@
+<!doctype html><meta charset="utf-8"><title>模拟课程页面</title>
+<style>td{padding:8px}video{width:320px;height:160px}</style>
+<h1>2026年实验室安全准入考试（研究生和教职工）</h1>
+<div><span>00:00:05 / 00:01:00</span><p>必学时长</p></div>
+<div><span>00:00:00 / 00:01:00</span><p>选学时长</p></div>
+<button onclick="tab='未学';page=1;render()">未学</button>
+<button onclick="tab='已学';page=1;render()">已学</button>
+<table><thead><tr><th>名称</th><th>学习模块</th><th>学习进度</th><th>操作</th></tr></thead><tbody id="rows"></tbody></table>
+<div class="el-pagination"><span id="total"></span><button onclick="page=1;render()">1</button>
+<span class="active" id="current">1</span><button class="btn-next" onclick="page++;render()">下一页</button></div>
+<script>
+let tab='未学',page=1,clicks=0;
+const items=[
+ {id:'1',title:'灭火毯',module:'安全知识',learned:'00:00:00',target:'00:01:00',required:true},
+ {id:'2',title:'消防安全',module:'微课堂',learned:'00:00:00',target:'00:01:00',required:false},
+ {id:'3',title:'个人防护装备',module:'安全手册',learned:'00:00:00',target:'00:01:00',required:false}];
+function render(){
+ const data=tab==='未学'?items:[{id:'4',title:'已完成文档',module:'法律法规',learned:'00:00:05',target:'00:00:05',required:true}];
+ document.getElementById('total').innerText='共 '+data.length+' 条';
+ document.getElementById('current').innerText=page;
+ document.querySelector('.btn-next').disabled=page*2>=data.length;
+ document.getElementById('rows').innerHTML=data.slice((page-1)*2,page*2).map(c=>`<tr data-id="${c.id}"><td><b>${c.required?'必学':'选学'}</b><p class="ppp">${c.title}</p></td><td>${c.module}</td><td>已学习：${c.learned} / ${c.target}</td><td><button onclick="clicks++;window.open('/document','_blank')">去学习</button></td></tr>`).join('');
+}render();
+</script>

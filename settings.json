@@ -1,0 +1,18 @@
+{
+  "default_account": "compatibility-probe",
+  "browser_backend": "native",
+  "restart_finished_video": true,
+  "keep_browser_open": true,
+  "portal_url": "https://labsafe.lzjtu.edu.cn/lab-platform/",
+  "home_url": "https://labsafe.lzjtu.edu.cn/lab-study-front/home",
+  "task_url": "https://labsafe.lzjtu.edu.cn/lab-study-front/examTask/75",
+  "exam_name": "2026年实验室安全准入考试（研究生和教职工）",
+  "poll_seconds": 3,
+  "video_upload_interval_seconds": 15,
+  "questionbank_session_seconds": 900,
+  "confirmation_delay_seconds": 300,
+  "confirmation_timeout_seconds": 600,
+  "stall_seconds": 120,
+  "login_timeout_seconds": 0,
+  "driver_path": "drivers/msedgedriver.exe"
+}

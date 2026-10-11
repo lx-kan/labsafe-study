@@ -1,0 +1,32 @@
+.venv/
+.cache/
+browser-profile/
+runtime/
+__pycache__/
+*.py[cod]
+drivers/
+dist/
+
+# Additional local environments, diagnostics and generated files
+venv/
+env/
+debug/
+build/
+*.log
+*.har
+*.zip
+*.7z
+*.rar
+
+# Local secrets, private configuration and backups
+.env
+.env.*
+!.env.example
+config.local.json
+settings.local.json
+*.pem
+*.key
+*.db
+*.sqlite
+*.sqlite3
+*.bak
