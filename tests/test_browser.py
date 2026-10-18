@@ -96,6 +96,35 @@ class BrowserTests(unittest.TestCase):
         banks = self.driver.execute_script(BANK_DOM, 'banks')
         self.assertEqual([b['name'] for b in banks], ['1.化学安全题库', '2.电气安全题库'])
 
+    def test_independent_collector_reads_site_feedback_without_exam_submit(self):
+        from collect_bank import answer_from_site
+        from questionbank import DOM as BANK_DOM
+        markup = '''<div class="exercises"><div class="top-tit">在线练习</div>
+        <div class="time">00:00:01</div><div class="m-item" id="m-item-1">
+        <div class="type">多选题</div><div class="desc"><p><span class="subject-title">测试题</span></p>
+        <label><input type="checkbox">A、选项甲</label><label><input type="checkbox">B、选项乙</label>
+        <span class="sub" onclick="document.querySelector('#m-item-1 .result-box').textContent='正确答案：B；我的答案：A,B'">提交答案</span>
+        <div class="result-box"></div></div></div></div>
+        <button id="exam-submit" onclick="document.body.dataset.examSubmit='1'">交卷</button>'''
+        self.driver.execute_script('document.body.innerHTML=arguments[0];history.pushState({},"","/questionBank/exercises/23")', markup)
+        q = self.driver.execute_script(BANK_DOM, 'sample')['questions'][0]
+        self.assertIsNone(answer_from_site(self.browser, q))
+        self.assertIn('正确答案：B', q['result'])
+        self.assertNotEqual(self.driver.execute_script('return document.body.dataset.examSubmit'), '1')
+
+    def test_mock_choice_does_not_click_submit(self):
+        from mock_fill import apply_answer
+        markup = '''<div class="exercises"><div class="m-item" id="m-item-1">
+          <div class="type">单选题</div><div class="desc"><p><span class="subject-title">测试题</span></p>
+          <label><input type="radio" name="one">A、错误</label>
+          <label><input type="radio" name="one">B、正确</label></div></div>
+          <button id="exam-submit" onclick="document.body.dataset.examSubmit='1'">交卷</button></div>'''
+        self.driver.execute_script('document.body.innerHTML=arguments[0];history.pushState({},"","/lab-study-front/routine-exam/75")', markup)
+        question = {'id': 'm-item-1', 'type': '单选题', 'title': '测试题', 'options': ['A、错误', 'B、正确']}
+        self.assertIsNone(apply_answer(self.driver, question, [1]))
+        self.assertEqual(self.driver.execute_script('return document.querySelectorAll("input:checked").length'), 1)
+        self.assertNotEqual(self.driver.execute_script('return document.body.dataset.examSubmit'), '1')
+
     def test_task_load_closes_only_known_questionbank_picker(self):
         self.driver.execute_script('''document.body.insertAdjacentHTML('beforeend', '<div class="ivu-modal"><div class="ivu-modal-header-inner">可练习题库</div><a class="ivu-modal-close" onclick="this.parentElement.remove()">关闭</a><ul class="tkbox"><li>1.化学安全题库</li></ul></div>')''')
         self.browser.load_task()
